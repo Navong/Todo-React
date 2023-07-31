@@ -1,59 +1,47 @@
-import { useState } from "react"
-import "./style.css" 
-import NewTodoFrom from "./NewTodoForm";
+import { useEffect, useState } from 'react';
+import './style.css';
+import NewTodoFrom from './NewTodoForm';
+import { TodoList } from './TodoList';
 
 export default function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(() => {
+    const localValue = localStorage.getItem("ITEMS")
+    if (localValue == null) return []
+    
+    return JSON.parse(localValue)
+  })
+
+  useEffect(() => {
+    localStorage.setItem("ITEMS", JSON.stringify(todos))
+  }, [todos])
+  
+  // console.log(JSON.stringify(todos))
 
   function addTodo(title) {
     setTodos((currentTodos) => {
-      return [
-        ...currentTodos,
-        { id: crypto.randomUUID(), title, completed: false },
-      ]
-    })
-
+      return [...currentTodos, { id: crypto.randomUUID(), title, completed: false }];
+    });
   }
 
   function toggleTodo(id, completed) {
-    setTodos(currentTodos => {
-      return currentTodos.map(todo => {
-        if (id === todo.id)
-          return { ...todo, completed }
-        return todo
-      })
-    })
+    setTodos((currentTodos) => {
+      return currentTodos.map((todo) => {
+        if (id === todo.id) return { ...todo, completed };
+        return todo;
+      });
+    });
   }
 
   function deleteTodo(id) {
-    setTodos(currentTodos => {
-      return currentTodos.filter(todo => todo.id !== id);
-    })
+    setTodos((currentTodos) => {
+      return currentTodos.filter((todo) => todo.id !== id);
+    });
   }
-
-  
   return (
     <>
       <NewTodoFrom onSubmit={addTodo} />
       <h1>To do list</h1>
-      <div className="list">
-        {todos.length === 0 && "No Todo"}
-        {todos.map(todo => {
-          return (
-          // eslint-disable-next-line react/jsx-key
-          <li key={todo.id}>
-            <label>
-                <input type="checkbox" checked={todo.completed}
-                  onChange={e => { toggleTodo(todo.id,e.target.completed)}}
-                />
-              {todo.title}
-            </label>
-              <button onClick={() => deleteTodo(todo.id)} className="btn btn-danger">DELETE</button>
-          </li>
-          )
-        })}
-        
-      </div>
+      <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
     </>
-  )
+  );
 }

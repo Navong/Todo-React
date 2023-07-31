@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 
-export function NewTodoFrom({onSubmit}) {
+export default function NewTodoFrom({onSubmit}) {
     const [newItem, setNewItem] = useState("");
     
     function handleSubmit(e) {

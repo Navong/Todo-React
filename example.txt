@@ -1,0 +1,22 @@
+function toggleTodo(id, completed){
+    setTodos(currentTodos =>{
+        return currentTodos.map(todo =>{  
+        //This line we map inside the currentTodos and give a callback function
+            if (id === todo.id)
+                return {...todo, completed}
+                //without return setTodos state not going to update at all
+            return todo
+         }) 
+    })    
+}
+
+
+
+================
+onClick={()=>deleteTodo(todo.id)} //()=> call only when click the btn
+
+function deleteTodo(id){
+    setTodos(currentTodos={
+        return currentTodos.filter(todo=>todo.id !== id);
+    })
+}
